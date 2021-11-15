@@ -73,7 +73,7 @@ The way to retrieve `d` knowing `k` is: `d=r¯¹⋅(s⋅k−h)` where `h` is the
 The Human Method because in the first intection of the project I had chosen to use the hand made operations with modular arithmetic.
 
 ## Pull requests
-There's an exception in Key Pair generation, if you can detect and correct it I'm happy to accept a pull request.
+There's an exception in Key Pair generation, if you can detect and correct it I will be happy to accept a pull request.
 
 ## License
 GNU GPLv3
