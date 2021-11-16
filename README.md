@@ -1,6 +1,6 @@
 # The Human Method
 
-A temptative to resurge the sun package to make a SunEC reimplementation to find vulnerabilities.
+An attempt to resurge the sun package to make a SunEC reimplementation to find vulnerabilities.
 
 In Elliptic Curve Criptography there are two keys, one is the Private Key that is used to sign messages and as the name suggested it is a secret key, the other is the public key which is used to verify the signed messages. This system can be used to encrypt messages and verify that sender is really who pretend to be. ECC is strong enough to protect BitCoin and USA secrets, only errors in implementations of algorithms are the reason of compromised messages, like the leak of the nounce (k) used to sign a message. However I have found this interesting website https://safecurves.cr.yp.to/ that claims vulnerabilities in some curves and I have started this project.
 
