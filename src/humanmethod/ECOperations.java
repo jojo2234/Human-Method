@@ -158,7 +158,18 @@ public class ECOperations {
         }
 
         ProjectivePoint.Mutable lookupResult = ps.mutable();
-
+        /**
+        System.out.println("t0: "+t0.asBigInteger().toString());
+        System.out.println("t1: "+t1.asBigInteger().toString());
+        System.out.println("t2: "+t2.asBigInteger().toString());
+        System.out.println("t3: "+t3.asBigInteger().toString());
+        System.out.println("t4: "+t4.asBigInteger().toString());
+        System.out.println("result.x: "+result.x.asBigInteger().toString());
+        System.out.println("result.y: "+result.y.asBigInteger().toString());
+        System.out.println("result.z: "+result.z.asBigInteger().toString());
+        System.out.println("result.asAffine() public: "+ result.asAffine().getX().asBigInteger()+","+ result.asAffine().getY().asBigInteger());**/
+        //System.out.println("-------NEXT------");
+        //int i=31;
         for(int i = s.length - 1; i >= 0; --i) {
             this.double4(result, t0, t1, t2, t3, t4);
             int high = (255 & s[i]) >>> 4; //In my opinion max value here is 15 and minimum is 0
@@ -169,7 +180,15 @@ public class ECOperations {
             this.lookup4(pointMultiples, low, lookupResult, zero);
             this.setSum(result, lookupResult, t0, t1, t2, t3, t4);
         }
-
+        //System.out.println("t0: "+t0.asBigInteger().toString());
+        //System.out.println("t1: "+t1.asBigInteger().toString());
+        //System.out.println("t2: "+t2.asBigInteger().toString());
+        //System.out.println("t3: "+t3.asBigInteger().toString());
+        //System.out.println("t4: "+t4.asBigInteger().toString());
+        //System.out.println("result.x: "+result.x.asBigInteger().toString());
+        //System.out.println("result.y: "+result.y.asBigInteger().toString());
+        //System.out.println("result.z: "+result.z.asBigInteger().toString());
+        System.out.println(result.x.asBigInteger().toString()+" "+result.y.asBigInteger().toString()+" "+result.z.asBigInteger().toString());
         return result;
     }
 

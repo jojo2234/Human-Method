@@ -54,12 +54,53 @@ public class HumanMethod {
         BigInteger myQx = new BigInteger("70899144226819986600466051744120390419306179699533960446833038039976773186538");
         BigInteger myQy = new BigInteger("39451825794351722093185790676827790492185744363571483016658958507009599105167");
         ECPoint Q = new ECPoint(myQx,myQy);
-        byte[] privArr = {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
+        //One Byte Only
+        //It's possible understand the generation process of a public point(key)?
+        //With a byte set 1 the G point is returned!
+        //But a byte array like this: 00000000000000000000000000000001 return a different point!
+        //That's because every byte in the byte array is processed even if zero.
+        
+        //byte[] privArr = {65, -30, 71, -120, 96, -20, 19, 96, 10, -30, -3, 122, 16, 22, 12, 12, -78, 60, 3, -114, 62, -108, 24, -107, -72, 109, 29, 119, 4, 61, -48, 0};
+        //byte[] privArr = {-127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127};
+        byte[] privArr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+        //byte[] privArr = {45,-30,-9,-2,-55,-71,96,65,-40,125,-116,111,46,-1,119,20,-122,11,-28,-126,-24,117,119,23,62,5,119,71,38,-124,62,-98};
+        //byte[] privArr = {15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
+        
+        
         BigInteger bigPrv = new BigInteger(privArr);
-        System.out.println(bigPrv);
+        //privArr = new BigInteger("1").toByteArray(); //REMOVE COMMENT TO SEE THE DIFFERENCE
+        
+        int i=0;
+        do{
+            //System.out.println("\n\nLast byte s[i]: "+privArr[31]+"\n\n"); //Se è 1 ritorna il punto G MA SOLO SE FA l'ultimo byte se c'è altri byte ritorna altri punti
+            System.out.println("Private key: "+bigPrv);
+            Point pub = ops.multiply(affGen, privArr);
+            AffinePoint affPub = pub.asAffine();
+            //From affinPoint to Point (pub=result)
+            //From result get t0,t1,t2,t3,t4 maybe trying to generate them with all the possible first byte s[0] (every s[0] possible)
+            //However t0,t1,t... depends upon the previous s[i]...
+            System.out.println("Public: "+affPub.getX().asBigInteger()+","+affPub.getY().asBigInteger());
+            bigPrv = bigPrv.add(new BigInteger("1"));
+            byte[] bigArrPrv = bigPrv.toByteArray();
+            int q=31;
+            System.out.print("PrivArr: ");
+            for(int j=0;j<privArr.length;j++){
+                System.out.print(privArr[j]);
+            }
+            System.out.print("\n\n");
+            if(privArr.length>30){
+                for(int j=bigArrPrv.length;j>0;j--){
+                    privArr[q] = bigArrPrv[j-1];
+                    q--;
+                }
+            }else{
+                privArr = bigPrv.toByteArray();
+            }
+            i++;
+        }while(i<5);
+        /** 
         boolean trovato = false;
         int i=0;
-        //Stupid bruteforce attack on curve
         do{
             Point pub = ops.multiply(affGen, privArr); //Generating a new public key with the private
             AffinePoint affPub = pub.asAffine();
@@ -72,18 +113,13 @@ public class HumanMethod {
             privArr = bigPrv.toByteArray();
             i++;
             System.out.println(i);
-        }while(trovato==false);
-        //Nota il risultato trovato qui non corrisponde alla chiave privata da passare al GreenPassExperiments perché vanno effettuate quelle operazioni di shif ma invertite per ogni byte del bytearray
-        //Quest ma invertite credo e sperare di ottenere il valore corretto in quella posizione
-        //int high = (255 & s[i]) >>> 4; oppure int low = 15 & s[i]; 
-        //Si cerca s[i] cioè un byte della chiave privata deve tornare lo stesso su tutte e due le operazioni effettuate
-        //Anche se forse modificando ECOperations anche su android potrei fare la stessa cosa che faccio qui senza cercare la chiave originale
+        }while(trovato==false);*/
     }
 
     /**
      * @param args the command line arguments
      */
-    public static void old_tests(String[] args) throws SignatureException, InvalidAlgorithmParameterException {
+    public static void oldmain(String[] args) throws SignatureException, InvalidAlgorithmParameterException {
         ECParameterSpec ecParams = (ECParameterSpec) gen_prime256v1();
 
         Optional<ECOperations> opsOpt = ECOperations.forParameters(ecParams);
@@ -111,26 +147,22 @@ public class HumanMethod {
         System.out.println("Numbits: "+numBits+" seedBits: "+seedBits+" seedSize: "+seedSize);*/
         
         /**
-         *  Chiave privata massima:               57669001306428065956053000376875938421040345304064124051023973211784186134399
-         *  Chiave privata massima tutti 15:       6811299366900952671974763824040465167839410862684739061144563765171360567055
-            Chiave privata di tutti 0:            0
-            PK primo numero 65 gli altri 0:       29400335157912315244266070412362164103369332044010299463143527189509193072640
-            PK primo numero 65 gli altri 12:      29799725740296454967896817214471275119405911756887571729747627678351974206476
-            PK primo numero 65 gli altri a caso:  29800136295302694869022804810320554474489315637186819418691211111982639730931
-            PK primo numero 127 gli altri 0:      57443731770074831323412168344153766786583156455220123566449660816425654157312
-            Chiave privata minima:               -57214914681968002444588016121939907409851051246551808113614335627439428763263
-            PK tutti 0 tranne l'ultimo byte a 1:  1
+         *  Max private key:                      57669001306428065956053000376875938421040345304064124051023973211784186134399
+         *  Max private key with every byte 15:   6811299366900952671974763824040465167839410862684739061144563765171360567055
+            Every byte at 0:                      0
+            PK first byte 65 others 0:            29400335157912315244266070412362164103369332044010299463143527189509193072640
+            PK first byte 65 others 12:           29799725740296454967896817214471275119405911756887571729747627678351974206476
+            PK first byte 65 others random:       29800136295302694869022804810320554474489315637186819418691211111982639730931
+            PK first byte 127 others 0:           57443731770074831323412168344153766786583156455220123566449660816425654157312
+            Minimum private key:                  -57214914681968002444588016121939907409851051246551808113614335627439428763263
+            PK everything 0 except the last byte set to : 1
 
-            X e Y sono connesse con la chiave privata sembrerebbe che al crescere del lato destro della chiave gli ultimi 16 byte cresca anche Y
-            Mentre al crescere del lato sinistro del byte array cresce la X 
+            X & Y are obviously connected with the private key seems that when the right side of the key grow (last 16 bytes), Y grows too. 
+            * Instead with the left side of the bytearray X grows. 
          */
         
         /**
-        //byte[] privArr = {65, -30, 71, -120, 96, -20, 19, 96, 10, -30, -3, 122, 16, 22, 12, 12, -78, 60, 3, -114, 62, -108, 24, -107, -72, 109, 29, 119, 4, 61, -48, -13}; //this.generatePrivateScalar(random, ops, seedSize);
-        byte[] privArr = {65, -30, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12};
-        //byte[] privArr = {127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127};
-        //byte[] privArr = {-127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127, -127};
-        //byte[] privArr = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        byte[] privArr = {65, -30, 71, -120, 96, -20, 19, 96, 10, -30, -3, 122, 16, 22, 12, 12, -78, 60, 3, -114, 62, -108, 24, -107, -72, 109, 29, 119, 4, 61, -48, -13}; //this.generatePrivateScalar(random, ops, seedSize);
         ECPoint genPoint = ecParams.getGenerator();
         ImmutableIntegerModuloP x = field.getElement(genPoint.getAffineX());
         ImmutableIntegerModuloP y = field.getElement(genPoint.getAffineY());
@@ -155,7 +187,7 @@ public class HumanMethod {
             privArr = bigPrv.toByteArray();
         }while(trovato!=false && bigPrv.compareTo(maxPrv) == -1); //Rimettere == false per loopare
         **/
-        //L'ultima esecuzione è stata di 153 minuti e 13 secondi
+        //Last execution 153 minutes e 13 seconds
         //System.out.println("\nW: "+W.getAffineX()+","+W.getAffineY());
         /**
          * System.out.println("Private Key: "+bigPrv);
